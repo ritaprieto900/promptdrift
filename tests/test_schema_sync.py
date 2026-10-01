@@ -33,3 +33,11 @@ def test_schema_requires_suite_and_provider() -> None:
     assert "suite" in schema["required"]
     assert "provider" in schema["required"]
     assert "cases" in schema["required"]
+
+
+def test_package_metadata_matches_version() -> None:
+    import importlib.metadata
+
+    from promptdrift import __version__ as v
+
+    assert importlib.metadata.version("promptdrift-py") == v
