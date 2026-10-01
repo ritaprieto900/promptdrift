@@ -26,3 +26,6 @@ Thumbs.db
 
 # promptdrift demo scratch dir
 promptdrift-demo/
+
+# mkdocs build output
+site/
