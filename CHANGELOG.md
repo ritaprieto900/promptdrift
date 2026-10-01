@@ -4,7 +4,13 @@ All notable changes are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.0] - 2026-10-01
+
+### Changed
+
+- Published on PyPI as `promptdrift-py`; PyPI's name-confusion policy blocks the
+  bare name (the empty project `prompt-drift` is edit distance 1). The install
+  command, CLI binary, and Python imports remain `promptdrift`.
 
 ### Added
 
@@ -32,3 +38,5 @@ All notable changes are documented here. The format follows
 - Published JSON Schema for suite files (editor completion).
 - Offline test suite, ruff and pyright clean, CI matrix Python 3.10-3.13 on
   Linux/macOS/Windows.
+
+[0.1.0]: https://github.com/ritaprieto900/promptdrift/releases/tag/v0.1.0

@@ -5,11 +5,16 @@
 Prompt regression testing with CI gating. Snapshot-diff first, flake-aware by design, Python native.
 
 [![CI](https://github.com/ritaprieto900/promptdrift/actions/workflows/ci.yml/badge.svg)](https://github.com/ritaprieto900/promptdrift/actions/workflows/ci.yml)
-[![Python](https://img.shields.io/badge/python-3.10%E2%80%933.13-blue)](https://pypi.org/project/promptdrift/)
+[![Python](https://img.shields.io/badge/python-3.10%E2%80%933.13-blue)](https://pypi.org/project/promptdrift-py/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-261230)](https://github.com/astral-sh/ruff)
 
 [中文文档](README.zh-CN.md)
+> **PyPI name note:** the distribution is published as `promptdrift-py` because
+> PyPI's name-confusion policy blocks the bare name (someone registered the empty
+> project `prompt-drift`, edit distance 1). The install command, CLI, and Python
+> imports are all still `promptdrift`.
+
 
 Teams that ship LLM features edit prompts constantly, and every edit can quietly break
 behavior that used to work. promptdrift catches that: it re-runs the same cases against your
@@ -19,7 +24,7 @@ behavior got statistically worse. Noise never trips the gate.
 ## Quick tour, no API key needed
 
 ```bash
-pipx install promptdrift
+pipx install promptdrift-py
 promptdrift demo
 ```
 
@@ -140,7 +145,7 @@ Exit codes: 0 pass, 1 gate or assertion failure, 2 config or runtime error.
 
 ```yaml
 # GitHub Actions, minimal version (see docs/ci.md for the full one)
-- run: uv tool install git+https://github.com/ritaprieto900/promptdrift
+- run: uv tool install promptdrift-py
 - run: promptdrift diff --require-baseline --md pr-report.md
   env:
     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

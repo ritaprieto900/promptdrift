@@ -20,7 +20,7 @@ jobs:
       - uses: astral-sh/setup-uv@v5
 
       - name: Install promptdrift
-        run: uv tool install git+https://github.com/ritaprieto900/promptdrift
+        run: uv tool install promptdrift-py
 
       - name: Gate the prompt change
         run: promptdrift diff --require-baseline --md pr-report.md

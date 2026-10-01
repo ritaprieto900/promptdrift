@@ -7,7 +7,7 @@ behavior got statistically worse. Sampling noise never trips the gate.
 ## Install and try
 
 ```bash
-pipx install promptdrift
+pipx install promptdrift-py
 promptdrift demo
 ```
 

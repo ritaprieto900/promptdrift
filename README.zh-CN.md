@@ -5,10 +5,14 @@
 Prompt 回归测试 + CI 门禁。快照 diff 优先，统计抗抖动，Python 原生。
 
 [![CI](https://github.com/ritaprieto900/promptdrift/actions/workflows/ci.yml/badge.svg)](https://github.com/ritaprieto900/promptdrift/actions/workflows/ci.yml)
-[![Python](https://img.shields.io/badge/python-3.10%E2%80%933.13-blue)](https://pypi.org/project/promptdrift/)
+[![Python](https://img.shields.io/badge/python-3.10%E2%80%933.13-blue)](https://pypi.org/project/promptdrift-py/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
 
 [English](README.md) · 中文文档
+> **关于 PyPI 包名：** 发行包发布为 `promptdrift-py`——PyPI 的防混淆策略拦下了裸名
+> （有人注册了空项目 `prompt-drift`，编辑距离为 1）。安装命令、CLI、Python 导入名
+> 仍然是 `promptdrift`。
+
 
 做 LLM 应用的团队都在频繁改 prompt，而每次改动都可能悄悄破坏原本正常的行为。promptdrift
 解决的就是这件事：对同一组用例重新执行，和提交在仓库里的基线快照比较通过率，行为统计显著
@@ -17,7 +21,7 @@ Prompt 回归测试 + CI 门禁。快照 diff 优先，统计抗抖动，Python 
 ## 30 秒体验，不需要 API key
 
 ```bash
-pipx install promptdrift
+pipx install promptdrift-py
 promptdrift demo
 ```
 
@@ -135,7 +139,7 @@ CI 里常用的 `diff` 选项：`--fail-on regression|flaky|any-fail`、`--requi
 
 ```yaml
 # GitHub Actions 最小用法（完整版见 docs/ci.md）
-- run: uv tool install git+https://github.com/ritaprieto900/promptdrift
+- run: uv tool install promptdrift-py
 - run: promptdrift diff --require-baseline --md pr-report.md
   env:
     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
