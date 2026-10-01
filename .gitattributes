@@ -1,0 +1,10 @@
+# Normalize line endings: this repo is tested on Linux, macOS and Windows.
+* text=auto eol=lf
+
+# Windows scripts keep CRLF
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+
+# Binary assets
+*.png binary
+*.gif binary
