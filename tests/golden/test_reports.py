@@ -78,8 +78,6 @@ def test_markdown_report_full_golden() -> None:
 
 
 def test_terminal_report_golden() -> None:
-    console = Console(
-        record=True, width=110, no_color=True, highlight=False, legacy_windows=False
-    )
+    console = Console(record=True, width=110, no_color=True, highlight=False, legacy_windows=False)
     render_diff(console, RUN, DIFF, FailOn.REGRESSION)
     _assert_golden("terminal_report.txt", console.export_text() + "\n")
