@@ -1,6 +1,6 @@
 """Minimal ``{{var}}`` interpolation for prompt text.
 
-Deliberately not Jinja, and not anything Turing-complete: suite files are
+Not Jinja, and not anything Turing-complete: suite files are
 *data*, not programs. A template may only substitute named variables;
 everything else — including stray braces — stays literal text. This keeps
 suite files trivially reviewable in diffs and free of an execution surface

@@ -9,7 +9,7 @@ Modules:
 - ``verdict``    the statistical diff engine (what changed)
 """
 
-from promptdrift.domain.assertions import ASSERTION_TYPES, AssertionSpec, BaseAssertion
+from promptdrift.domain.assertions import ASSERTION_TYPES, AssertionSpec, BaseAssertion, Judge
 from promptdrift.domain.results import (
     AssertionOutcome,
     CaseResult,
@@ -53,6 +53,7 @@ __all__ = [
     "CaseDiff",
     "CaseResult",
     "FailOn",
+    "Judge",
     "Message",
     "MockConfig",
     "MockRule",

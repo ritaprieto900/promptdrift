@@ -74,6 +74,9 @@
               },
               {
                 "$ref": "#/$defs/CompletionTokensUnder"
+              },
+              {
+                "$ref": "#/$defs/Judge"
               }
             ]
           },
@@ -161,6 +164,29 @@
         "json_schema"
       ],
       "title": "JsonSchema",
+      "type": "object"
+    },
+    "Judge": {
+      "additionalProperties": false,
+      "description": "Score the output against a rubric with an LLM judge (1-5 scale).\n\nUnlike the deterministic assertions, a judge assertion is evaluated by\nthe Runner through the suite's ``judge`` provider (a cheap model is\ntypical), so ``check()`` is never called on it directly. One judge call\nper sample feeds the same multi-sample statistics as everything else:\na judge that wavers shows up as ``unstable``, not as a gate failure.",
+      "properties": {
+        "rubric": {
+          "minLength": 1,
+          "title": "Rubric",
+          "type": "string"
+        },
+        "min_score": {
+          "default": 3,
+          "maximum": 5,
+          "minimum": 1,
+          "title": "Min Score",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "rubric"
+      ],
+      "title": "Judge",
       "type": "object"
     },
     "LatencyUnder": {
@@ -488,6 +514,21 @@
         }
       ],
       "title": "Provider"
+    },
+    "judge": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/OpenAICompatConfig"
+        },
+        {
+          "$ref": "#/$defs/MockConfig"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Judge"
     },
     "samples": {
       "default": 3,

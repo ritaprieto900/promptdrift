@@ -12,7 +12,7 @@ promptdrift gates trustworthy instead of noisy:
   with each other is ``unstable``: a warning by default, upgradeable to a
   gate failure with ``--fail-on flaky``.
 
-Small samples are intentionally forgiving. With ``samples: 3`` a 3/3 → 2/3
+Small samples err on the forgiving side. With ``samples: 3`` a 3/3 → 2/3
 drop is ``unstable``, not ``regressed``; raise the sample count to sharpen
 the statistics. A mixed baseline likewise reduces detection power — approve
 baselines from stable runs.

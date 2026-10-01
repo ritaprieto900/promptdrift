@@ -1,7 +1,7 @@
 """The promptdrift command line interface.
 
-Deliberately thin: every capability lives in the library API, commands here
-only load configs, orchestrate services, render output, and map outcomes to
+A thin layer: every capability lives in the library API, commands here
+load configs, orchestrate services, render output, and map outcomes to
 documented exit codes (0 pass, 1 gate/assertion failure, 2 usage or runtime
 error).
 """
@@ -12,7 +12,7 @@ import asyncio
 import json
 from collections.abc import Iterator
 from contextlib import contextmanager
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 import typer
@@ -36,6 +36,7 @@ from promptdrift.errors import PromptdriftError, SuiteLoadError
 from promptdrift.ports import Provider
 from promptdrift.services.cost import estimate
 from promptdrift.services.differ import compare
+from promptdrift.services.judge import JudgeBinding
 from promptdrift.services.junit import junit_xml
 from promptdrift.services.loader import load_suite, resolve_suite_path
 from promptdrift.services.persistence import load_latest_run, save_run
@@ -95,15 +96,29 @@ def _cache_db_path(root: Path) -> Path:
 
 async def _execute_suite(root: Path, suite_obj: Suite, *, use_cache: bool) -> Run:
     provider = build_provider(suite_obj.provider)
-    cache: SqliteCache | None = None
-    effective: Provider = provider
-    if use_cache and suite_obj.provider_id != "mock":
-        cache = SqliteCache(_cache_db_path(root))
-        effective = CachedProvider(provider, cache)
+    judge_binding: JudgeBinding | None = None
+    if suite_obj.judge is not None:
+        judge_binding = JudgeBinding(
+            provider=build_provider(suite_obj.judge),
+            model=suite_obj.judge.model_name,
+            params=suite_obj.judge.request_params(),
+        )
+    wants_cache = use_cache and (
+        suite_obj.provider_id != "mock"
+        or (judge_binding is not None and judge_binding.provider.provider_id != "mock")
+    )
+    cache: SqliteCache | None = SqliteCache(_cache_db_path(root)) if wants_cache else None
+    effective: Provider = CachedProvider(provider, cache) if cache is not None else provider
+    if cache is not None and judge_binding is not None:
+        judge_binding = replace(
+            judge_binding, provider=CachedProvider(judge_binding.provider, cache)
+        )
     try:
-        return await Runner(effective).run(suite_obj)
+        return await Runner(effective, judge_binding).run(suite_obj)
     finally:
         await provider.aclose()
+        if judge_binding is not None:
+            await judge_binding.provider.aclose()
         if cache is not None:
             cache.close()
 

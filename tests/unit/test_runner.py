@@ -8,7 +8,8 @@ from promptdrift.adapters.mock import MockProvider
 from promptdrift.domain.results import TokenUsage
 from promptdrift.domain.suite import MockConfig
 from promptdrift.ports import CompletionRequest
-from promptdrift.services.runner import Runner, _opt_float, _opt_int
+from promptdrift.services.judge import opt_float, opt_int
+from promptdrift.services.runner import Runner
 from tests.conftest import suite_from_yaml_text
 
 SAMPLING_SUITE = """
@@ -30,15 +31,15 @@ cases:
 
 def test_opt_helpers_convert_and_guard() -> None:
     params: dict[str, object] = {"a": 1.5, "b": 3, "n": None}
-    assert _opt_float(params, "a") == 1.5
-    assert _opt_float(params, "b") == 3.0
-    assert _opt_float(params, "n") is None
-    assert _opt_int(params, "b") == 3
-    assert _opt_int(params, "n") is None
+    assert opt_float(params, "a") == 1.5
+    assert opt_float(params, "b") == 3.0
+    assert opt_float(params, "n") is None
+    assert opt_int(params, "b") == 3
+    assert opt_int(params, "n") is None
     with pytest.raises(TypeError, match="must be numeric"):
-        _opt_float({"x": "fast"}, "x")
+        opt_float({"x": "fast"}, "x")
     with pytest.raises(TypeError, match="must be an integer"):
-        _opt_int({"x": 1.5}, "x")
+        opt_int({"x": 1.5}, "x")
 
 
 async def test_request_carries_sampling_params() -> None:

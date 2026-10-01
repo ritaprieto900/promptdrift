@@ -21,7 +21,7 @@ from promptdrift.adapters.snapshot_store import (
     save_snapshot,
     snapshot_from_run,
 )
-from promptdrift.domain.assertions import ASSERTION_TYPES, BaseAssertion
+from promptdrift.domain.assertions import ASSERTION_TYPES, BaseAssertion, Judge
 from promptdrift.domain.results import AssertionOutcome, CaseResult, Run, SampleResult
 from promptdrift.domain.snapshot import (
     Snapshot,
@@ -66,6 +66,7 @@ __all__ = [
     "CompletionRequest",
     "CompletionResponse",
     "FailOn",
+    "Judge",
     "Message",
     "MockConfig",
     "MockRule",

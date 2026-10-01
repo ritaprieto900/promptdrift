@@ -4,12 +4,11 @@ A suite file (``promptest.yaml`` or any ``*.yaml``) is data, validated into
 these models before anything executes. Validation errors are shaped to be
 readable by humans editing YAML.
 
-The *config fingerprint* is the load-bearing idea here: it hashes only the
-fields that define what "comparable to the baseline" means (model, sampling
-params, sample count) and deliberately excludes prompt text, vars, mock rule
-text, and assertion targets. Those later categories are *prompt changes* —
-the thing this tool exists to measure — so they must show up as diffs, not
-as staleness errors.
+The config fingerprint hashes only the fields that define what "comparable
+to the baseline" means: model, sampling params, sample count, judge model.
+It excludes prompt text, vars, mock rule text, and assertion targets —
+those are prompt changes, the thing this tool exists to measure, so they
+surface as diffs rather than as staleness errors.
 """
 
 from __future__ import annotations
@@ -26,6 +25,8 @@ from promptdrift.domain.templates import missing_vars
 
 _SLUG_RE = re.compile(r"^[a-z0-9][a-z0-9_-]*$")
 
+_PROVIDER_KEYS = ("mock", "openai_compat")
+
 
 def _check_slug(kind: str, value: str) -> str:
     if not _SLUG_RE.match(value):
@@ -33,6 +34,18 @@ def _check_slug(kind: str, value: str) -> str:
             f"{kind} {value!r} must be kebab-case matching [a-z0-9][a-z0-9_-]* "
             "(it is used as a file/key identity)"
         )
+    return value
+
+
+def _unwrap_provider_key(value: object, field: str) -> object:
+    """Accept the YAML shape ``{mock: {...}}`` — the single key names the
+    provider type, so fold it into the ``type`` discriminator."""
+    if isinstance(value, dict) and len(value) == 1 and "type" not in value:
+        ((key, inner),) = value.items()
+        if key in _PROVIDER_KEYS:
+            if not isinstance(inner, dict):
+                raise ValueError(f"{field}.{key} must be a mapping of provider options")
+            return {"type": key, **inner}
     return value
 
 
@@ -104,6 +117,8 @@ class OpenAICompatConfig(BaseProviderConfig):
         }
 
     def identity(self) -> dict[str, object]:
+        # Excludes pricing (a billing setting) and keeps only what changes
+        # what "same behavior" means for baseline comparability.
         return {
             "type": self.type,
             "model": self.model,
@@ -166,8 +181,8 @@ class MockConfig(BaseProviderConfig):
         return {}
 
     def identity(self) -> dict[str, object]:
-        # Mock rule text is behavior *content* — a "prompt change" when edited,
-        # deliberately excluded so diffs measure it instead of erroring.
+        # Mock rule text is behavior content: editing it is a prompt change,
+        # so it stays out of the fingerprint and the diff measures it.
         return {"type": self.type}
 
 
@@ -219,9 +234,12 @@ class Case(BaseModel):
                     f"assertions[{index}]: unknown assertion {key!r}; "
                     f"supported: {sorted(ASSERTION_TYPES)}"
                 )
-            # In YAML, the key names the field: `- contains: "x"` means the
-            # Contains model with contains="x".
-            parsed.append(assertion_cls.model_validate({str(key): raw}))
+            # Most assertions name their field with the YAML key
+            # (`- contains: "x"`); judge takes the whole value as input.
+            if assertion_cls.value_is_model_input:
+                parsed.append(assertion_cls.model_validate(raw))
+            else:
+                parsed.append(assertion_cls.model_validate({str(key): raw}))
         return parsed
 
     @model_validator(mode="after")
@@ -250,22 +268,22 @@ class Suite(BaseModel):
     suite: str
     description: str | None = None
     provider: ProviderConfig
+    judge: OpenAICompatConfig | MockConfig | None = None
+    """Grading provider for `judge` assertions, independent of the provider
+    under test. Point it at a cheap, fast model."""
     samples: int = Field(default=3, ge=1, le=20)
     concurrency: int = Field(default=4, ge=1, le=32)
     cases: list[Case] = Field(min_length=1)
 
     @field_validator("provider", mode="before")
     @classmethod
-    def _unwrap_provider_key(cls, value: object) -> object:
-        """Accept the YAML shape ``provider: {mock: {...}}`` — the single key
-        names the provider type, so fold it into the ``type`` discriminator."""
-        if isinstance(value, dict) and len(value) == 1 and "type" not in value:
-            ((key, inner),) = value.items()
-            if key in ("mock", "openai_compat"):
-                if not isinstance(inner, dict):
-                    raise ValueError(f"provider.{key} must be a mapping of provider options")
-                return {"type": key, **inner}
-        return value
+    def _unwrap_provider(cls, value: object) -> object:
+        return _unwrap_provider_key(value, "provider")
+
+    @field_validator("judge", mode="before")
+    @classmethod
+    def _unwrap_judge(cls, value: object) -> object:
+        return _unwrap_provider_key(value, "judge")
 
     @field_validator("suite")
     @classmethod
@@ -298,6 +316,7 @@ class Suite(BaseModel):
             "suite": self.suite,
             "samples": self.samples,
             "provider_identity": self.provider.identity(),
+            "judge_identity": None if self.judge is None else self.judge.identity(),
         }
         blob = json.dumps(payload, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
         return "sha256:" + hashlib.sha256(blob.encode("utf-8")).hexdigest()

@@ -15,8 +15,9 @@ Each assertion model owns:
 - ``check()``         pure evaluation against one sample's output/usage/latency
 
 Adding a new assertion type means: subclass :class:`BaseAssertion`, add it to
-``ASSERTION_TYPES``, and the loader/CLI/schema pick it up. The M1 roadmap adds
-``judge`` (LLM-as-judge with rubric scoring) here.
+``ASSERTION_TYPES``, and the loader/CLI/schema pick it up. ``judge``
+(LLM-as-judge rubric scoring) is evaluated by the Runner via the suite's
+``judge`` provider rather than through ``check()``.
 """
 
 from __future__ import annotations
@@ -66,6 +67,10 @@ class BaseAssertion(BaseModel):
     """Common behavior for every assertion type."""
 
     type_name: ClassVar[str]
+    #: Most assertions use the YAML key as the field name (``contains: "x"``);
+    #: ones where the whole value is the model input (``judge: {rubric: ...}``)
+    #: set this to True.
+    value_is_model_input: ClassVar[bool] = False
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     @property
@@ -257,6 +262,31 @@ class CompletionTokensUnder(BaseAssertion):
         )
 
 
+class Judge(BaseAssertion):
+    """Score the output against a rubric with an LLM judge (1-5 scale).
+
+    Unlike the deterministic assertions, a judge assertion is evaluated by
+    the Runner through the suite's ``judge`` provider (a cheap model is
+    typical), so ``check()`` is never called on it directly. One judge call
+    per sample feeds the same multi-sample statistics as everything else:
+    a judge that wavers shows up as ``unstable``, not as a gate failure.
+    """
+
+    type_name: ClassVar[str] = "judge"
+    value_is_model_input: ClassVar[bool] = True
+    rubric: str = Field(min_length=1)
+    min_score: int = Field(default=3, ge=1, le=5)
+
+    @property
+    def target_key(self) -> str:
+        return hashlib.sha1(self.rubric.encode("utf-8")).hexdigest()[:8]
+
+    def check(self, output: str, usage: TokenUsage, latency_ms: float) -> AssertionOutcome:
+        raise NotImplementedError(
+            "judge assertions are evaluated by the Runner via the suite's `judge` provider"
+        )
+
+
 AssertionSpec = (
     Equals
     | Contains
@@ -266,6 +296,7 @@ AssertionSpec = (
     | JsonSchema
     | LatencyUnder
     | CompletionTokensUnder
+    | Judge
 )
 
 ASSERTION_TYPES: dict[str, type[BaseAssertion]] = {
@@ -279,6 +310,7 @@ ASSERTION_TYPES: dict[str, type[BaseAssertion]] = {
         JsonSchema,
         LatencyUnder,
         CompletionTokensUnder,
+        Judge,
     )
 }
 

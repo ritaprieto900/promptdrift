@@ -1,9 +1,9 @@
 """Cost estimation for a suite run.
 
-Honesty rules: call counts are exact; token figures are estimates from a
-~4 chars/token heuristic and labeled as such; completion cost is never
-guessed (output length is unknown before the run), so any money figure is a
-*lower bound*.
+Honesty rules: call counts are exact (including one judge call per sample
+per judge assertion); token figures are estimates from a ~4 chars/token
+heuristic and labeled as such; completion cost is never guessed (output
+length is unknown before the run), so any money figure is a lower bound.
 """
 
 from __future__ import annotations
@@ -11,6 +11,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
+from promptdrift.domain.assertions import Judge
 from promptdrift.domain.suite import OpenAICompatConfig, Suite
 from promptdrift.domain.templates import render
 
@@ -38,7 +39,8 @@ def estimate(suite: Suite) -> CostEstimate:
     prompt_chars = 0
     for case in suite.cases:
         samples = suite.effective_samples(case)
-        calls += samples
+        judge_count = sum(1 for assertion in case.assertions if isinstance(assertion, Judge))
+        calls += samples * (1 + judge_count)
         per_call = sum(len(render(message.content, case.vars)) for message in case.messages)
         prompt_chars += per_call * samples
     provider = suite.provider

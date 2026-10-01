@@ -1,7 +1,7 @@
 """Baseline snapshots: the recorded "known-good" state of a suite.
 
-A snapshot is deliberately a human-reviewable YAML file you commit next to
-the suite (like jest snapshots, but for behavior). The models here are pure
+A snapshot is a human-reviewable YAML file committed next to the suite —
+jest snapshots, but for behavior. The models here are pure
 data; YAML serialization lives in the adapters layer.
 
 ``wilson_interval`` lives here too: it is a property of rates, and both the
