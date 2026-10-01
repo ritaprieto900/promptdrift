@@ -1,0 +1,14 @@
+promptdrift it-suite  ·  1 regressed · 1 unstable · 1 new · 1 removed · 1 stable  ·  score 89% → 58%
+model mock                                                                                                    
+┌──────────┬──────────────────────┬────────┬───────┬──────────────┬──────────────────────────────────────────┐
+│ case     │ assertion            │ before │ after │ verdict      │ note                                     │
+├──────────┼──────────────────────┼────────┼───────┼──────────────┼──────────────────────────────────────────┤
+│ faq      │ contains-welcome     │      — │   3/3 │ 🆕 new       │ no baseline recorded for this assertion  │
+│ greeting │ contains-hello       │    3/3 │   0/3 │ 🔴 regressed │ all 3 samples failed (baseline 3/3)      │
+│ legacy   │ (removed from suite) │        │       │ ➖ removed   │                                          │
+│ refund   │ contains-申请退款    │    3/3 │   1/3 │ ⚠️ unstable  │ samples disagree (1/3 passed) where      │
+│          │                      │        │       │              │ baseline was 100%                        │
+│ tone     │ regex-polite         │    2/3 │   3/3 │ ✅ stable    │                                          │
+└──────────┴──────────────────────┴────────┴───────┴──────────────┴──────────────────────────────────────────┘
+❌ gate FAILED — 1 regressed case(s)
+

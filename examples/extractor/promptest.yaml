@@ -1,0 +1,32 @@
+$schema: https://raw.githubusercontent.com/promptdrift/promptdrift/main/schema/promptest.schema.json
+suite: extractor
+description: 结构化抽取任务 —— 用 json_schema 把输出契约钉死，防止 prompt 改动破坏下游解析。
+
+provider:
+  openai_compat:
+    model: glm-4.7
+    base_url: https://open.bigmodel.cn/api/paas/v4
+    api_key_env: ZHIPUAI_API_KEY
+    temperature: 0.1        # 抽取类任务用低温
+    max_tokens: 512
+
+samples: 5                   # 抽取契约值得更多样本来锐化统计
+cases:
+  - id: invoice-fields
+    messages:
+      - role: system
+        content: "从文本中抽取发票信息，只输出 JSON：{\"invoice_id\": string, \"amount\": number, \"currency\": string}。"
+      - role: user
+        content: "{{text}}"
+    vars:
+      text: 发票号码 INV-20260930-001，金额 1280.00 元人民币。
+    assertions:
+      - is_json: true
+      - json_schema:
+          type: object
+          required: [invoice_id, amount, currency]
+          properties:
+            invoice_id: {type: string}
+            amount: {type: number}
+            currency: {type: string}
+      - completion_tokens_under: 200

@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+.python-version
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+.mypy_cache/
+
+# promptdrift runtime artifacts — baselines are committed, these are not
+.promptest/cache.db*
+.promptest/runs/
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# promptdrift demo scratch dir
+promptdrift-demo/

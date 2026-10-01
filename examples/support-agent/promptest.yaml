@@ -1,0 +1,40 @@
+$schema: https://raw.githubusercontent.com/promptdrift/promptdrift/main/schema/promptest.schema.json
+suite: support-agent
+description: 客服助手的 prompt 回归套件 —— 换成你自己的系统提示词与真实用例即可。
+
+provider:
+  openai_compat:
+    model: glm-4.7
+    base_url: https://open.bigmodel.cn/api/paas/v4
+    api_key_env: ZHIPUAI_API_KEY
+    temperature: 0.7
+    max_tokens: 1024
+    pricing: {prompt_per_1m: 1.0, completion_per_1m: 8.0}
+
+samples: 3
+concurrency: 4
+
+cases:
+  - id: refund-steps
+    description: 询问退款时，回复必须给出申请入口、时限，且不许推诿。
+    messages:
+      - role: system
+        content: "你是电商客服，语气专业友好，回答不超过 200 字。"
+      - role: user
+        content: "{{question}}"
+    vars:
+      question: 收到的杯子有裂痕，我想申请退款，流程是什么？
+    assertions:
+      - contains: "申请退款"
+      - regex: "3-5 个工作日|1-3 个工作日"
+      - not_contains: "无法处理"
+      - completion_tokens_under: 400
+
+  - id: latency-budget
+    description: 简单问候必须在预算延迟内返回（P95 语义由多样本均值近似）。
+    messages:
+      - role: user
+        content: "你好，在吗？"
+    assertions:
+      - latency_under: 5000
+      - contains: "您好"

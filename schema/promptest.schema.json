@@ -1,0 +1,522 @@
+{
+  "$defs": {
+    "Case": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "messages": {
+          "items": {
+            "$ref": "#/$defs/Message"
+          },
+          "minItems": 1,
+          "title": "Messages",
+          "type": "array"
+        },
+        "vars": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Vars",
+          "type": "object"
+        },
+        "samples": {
+          "anyOf": [
+            {
+              "maximum": 20,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Samples"
+        },
+        "assertions": {
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/Equals"
+              },
+              {
+                "$ref": "#/$defs/Contains"
+              },
+              {
+                "$ref": "#/$defs/NotContains"
+              },
+              {
+                "$ref": "#/$defs/Regex"
+              },
+              {
+                "$ref": "#/$defs/IsJson"
+              },
+              {
+                "$ref": "#/$defs/JsonSchema"
+              },
+              {
+                "$ref": "#/$defs/LatencyUnder"
+              },
+              {
+                "$ref": "#/$defs/CompletionTokensUnder"
+              }
+            ]
+          },
+          "title": "Assertions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "messages"
+      ],
+      "title": "Case",
+      "type": "object"
+    },
+    "CompletionTokensUnder": {
+      "additionalProperties": false,
+      "description": "Completion token count must stay under the threshold.",
+      "properties": {
+        "completion_tokens_under": {
+          "exclusiveMinimum": 0,
+          "title": "Completion Tokens Under",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "completion_tokens_under"
+      ],
+      "title": "CompletionTokensUnder",
+      "type": "object"
+    },
+    "Contains": {
+      "additionalProperties": false,
+      "description": "Output must contain the target substring.",
+      "properties": {
+        "contains": {
+          "title": "Contains",
+          "type": "string"
+        }
+      },
+      "required": [
+        "contains"
+      ],
+      "title": "Contains",
+      "type": "object"
+    },
+    "Equals": {
+      "additionalProperties": false,
+      "description": "Output must equal the target string exactly.",
+      "properties": {
+        "equals": {
+          "title": "Equals",
+          "type": "string"
+        }
+      },
+      "required": [
+        "equals"
+      ],
+      "title": "Equals",
+      "type": "object"
+    },
+    "IsJson": {
+      "additionalProperties": false,
+      "description": "Output must parse as JSON (strictly — no markdown fences stripped).",
+      "properties": {
+        "is_json": {
+          "default": true,
+          "title": "Is Json",
+          "type": "boolean"
+        }
+      },
+      "title": "IsJson",
+      "type": "object"
+    },
+    "JsonSchema": {
+      "additionalProperties": false,
+      "description": "Output must parse as JSON and validate against the JSON Schema.",
+      "properties": {
+        "json_schema": {
+          "additionalProperties": true,
+          "title": "Json Schema",
+          "type": "object"
+        }
+      },
+      "required": [
+        "json_schema"
+      ],
+      "title": "JsonSchema",
+      "type": "object"
+    },
+    "LatencyUnder": {
+      "additionalProperties": false,
+      "description": "Sample latency must stay under the threshold (milliseconds).",
+      "properties": {
+        "latency_under": {
+          "exclusiveMinimum": 0,
+          "title": "Latency Under",
+          "type": "number"
+        }
+      },
+      "required": [
+        "latency_under"
+      ],
+      "title": "LatencyUnder",
+      "type": "object"
+    },
+    "Message": {
+      "additionalProperties": false,
+      "properties": {
+        "role": {
+          "enum": [
+            "system",
+            "user",
+            "assistant"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "content": {
+          "title": "Content",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "content"
+      ],
+      "title": "Message",
+      "type": "object"
+    },
+    "MockConfig": {
+      "additionalProperties": false,
+      "description": "Offline scripted provider — no API key, fully deterministic.\n\nThe first rule whose ``contains`` matches the last user message wins.\n``variants`` cycle per call, which is how you simulate flakiness.",
+      "properties": {
+        "type": {
+          "const": "mock",
+          "default": "mock",
+          "title": "Type",
+          "type": "string"
+        },
+        "rules": {
+          "items": {
+            "$ref": "#/$defs/MockRule"
+          },
+          "title": "Rules",
+          "type": "array"
+        },
+        "default": {
+          "type": "string",
+          "default": "",
+          "title": "Default"
+        },
+        "default_variants": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Default Variants"
+        }
+      },
+      "title": "MockConfig",
+      "type": "object"
+    },
+    "MockRule": {
+      "additionalProperties": false,
+      "description": "Return canned text when the rule matches the last user message.",
+      "properties": {
+        "contains": {
+          "title": "Contains",
+          "type": "string"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text"
+        },
+        "variants": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Variants"
+        }
+      },
+      "required": [
+        "contains"
+      ],
+      "title": "MockRule",
+      "type": "object"
+    },
+    "NotContains": {
+      "additionalProperties": false,
+      "description": "Output must not contain the target substring.",
+      "properties": {
+        "not_contains": {
+          "title": "Not Contains",
+          "type": "string"
+        }
+      },
+      "required": [
+        "not_contains"
+      ],
+      "title": "NotContains",
+      "type": "object"
+    },
+    "OpenAICompatConfig": {
+      "additionalProperties": false,
+      "description": "Any OpenAI-compatible endpoint: OpenAI, GLM, DeepSeek, Qwen, Moonshot, ...",
+      "properties": {
+        "type": {
+          "const": "openai_compat",
+          "default": "openai_compat",
+          "title": "Type",
+          "type": "string"
+        },
+        "model": {
+          "title": "Model",
+          "type": "string"
+        },
+        "base_url": {
+          "default": "https://api.openai.com/v1",
+          "title": "Base Url",
+          "type": "string"
+        },
+        "api_key_env": {
+          "default": "OPENAI_API_KEY",
+          "title": "Api Key Env",
+          "type": "string"
+        },
+        "temperature": {
+          "anyOf": [
+            {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Temperature"
+        },
+        "max_tokens": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Tokens"
+        },
+        "top_p": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 1,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Top P"
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seed"
+        },
+        "timeout_seconds": {
+          "default": 120,
+          "exclusiveMinimum": 0,
+          "title": "Timeout Seconds",
+          "type": "number"
+        },
+        "max_retries": {
+          "default": 2,
+          "maximum": 10,
+          "minimum": 0,
+          "title": "Max Retries",
+          "type": "integer"
+        },
+        "pricing": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Pricing"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "model"
+      ],
+      "title": "OpenAICompatConfig",
+      "type": "object"
+    },
+    "Pricing": {
+      "additionalProperties": false,
+      "description": "Per-million-token prices, used by ``promptdrift cost`` estimates.",
+      "properties": {
+        "prompt_per_1m": {
+          "minimum": 0,
+          "title": "Prompt Per 1M",
+          "type": "number"
+        },
+        "completion_per_1m": {
+          "minimum": 0,
+          "title": "Completion Per 1M",
+          "type": "number"
+        }
+      },
+      "required": [
+        "prompt_per_1m",
+        "completion_per_1m"
+      ],
+      "title": "Pricing",
+      "type": "object"
+    },
+    "Regex": {
+      "additionalProperties": false,
+      "description": "Output must match the pattern (``re.search``, DOTALL).",
+      "properties": {
+        "regex": {
+          "title": "Regex",
+          "type": "string"
+        }
+      },
+      "required": [
+        "regex"
+      ],
+      "title": "Regex",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": 1,
+      "default": 1,
+      "title": "Version",
+      "type": "integer"
+    },
+    "suite": {
+      "title": "Suite",
+      "type": "string"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Description"
+    },
+    "provider": {
+      "discriminator": {
+        "mapping": {
+          "mock": "#/$defs/MockConfig",
+          "openai_compat": "#/$defs/OpenAICompatConfig"
+        },
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/OpenAICompatConfig"
+        },
+        {
+          "$ref": "#/$defs/MockConfig"
+        }
+      ],
+      "title": "Provider"
+    },
+    "samples": {
+      "default": 3,
+      "maximum": 20,
+      "minimum": 1,
+      "title": "Samples",
+      "type": "integer"
+    },
+    "concurrency": {
+      "default": 4,
+      "maximum": 32,
+      "minimum": 1,
+      "title": "Concurrency",
+      "type": "integer"
+    },
+    "cases": {
+      "items": {
+        "$ref": "#/$defs/Case"
+      },
+      "minItems": 1,
+      "title": "Cases",
+      "type": "array"
+    }
+  },
+  "required": [
+    "suite",
+    "provider",
+    "cases"
+  ],
+  "title": "Suite",
+  "type": "object"
+}
