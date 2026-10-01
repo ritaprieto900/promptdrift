@@ -37,5 +37,5 @@ snapshot. The diff on that file in your PR is the reviewed behavior change.
 
 ## Links
 
-- [GitHub repository](https://github.com/promptdrift/promptdrift)
-- [中文 README](https://github.com/promptdrift/promptdrift/blob/main/README.zh-CN.md)
+- [GitHub repository](https://github.com/ritaprieto900/promptdrift)
+- [中文 README](https://github.com/ritaprieto900/promptdrift/blob/main/README.zh-CN.md)

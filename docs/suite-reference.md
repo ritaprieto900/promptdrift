@@ -1,7 +1,7 @@
 # Suite reference
 
 Everything lives in one YAML file, validated before anything runs (with editor completion
-via the published [JSON Schema](https://github.com/promptdrift/promptdrift/blob/main/schema/promptest.schema.json)).
+via the published [JSON Schema](https://github.com/ritaprieto900/promptdrift/blob/main/schema/promptest.schema.json)).
 
 ## Top-level keys
 

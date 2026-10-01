@@ -1,7 +1,7 @@
 site_name: promptdrift
 site_description: Prompt regression testing with CI gating. Snapshot-diff first, flake-aware by design.
-repo_url: https://github.com/promptdrift/promptdrift
-repo_name: promptdrift/promptdrift
+repo_url: https://github.com/ritaprieto900/promptdrift
+repo_name: ritaprieto900/promptdrift
 
 theme:
   name: material

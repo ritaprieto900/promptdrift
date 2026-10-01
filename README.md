@@ -4,7 +4,7 @@
 
 Prompt regression testing with CI gating. Snapshot-diff first, flake-aware by design, Python native.
 
-[![CI](https://github.com/promptdrift/promptdrift/actions/workflows/ci.yml/badge.svg)](https://github.com/promptdrift/promptdrift/actions/workflows/ci.yml)
+[![CI](https://github.com/ritaprieto900/promptdrift/actions/workflows/ci.yml/badge.svg)](https://github.com/ritaprieto900/promptdrift/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%E2%80%933.13-blue)](https://pypi.org/project/promptdrift/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-261230)](https://github.com/astral-sh/ruff)
@@ -79,7 +79,7 @@ Moonshot, vLLM, Ollama), configured with `base_url`.
 ## Suite file
 
 ```yaml
-$schema: https://raw.githubusercontent.com/promptdrift/promptdrift/main/schema/promptest.schema.json
+$schema: https://raw.githubusercontent.com/ritaprieto900/promptdrift/main/schema/promptest.schema.json
 suite: support-agent
 provider:
   openai_compat:
@@ -140,7 +140,7 @@ Exit codes: 0 pass, 1 gate or assertion failure, 2 config or runtime error.
 
 ```yaml
 # GitHub Actions, minimal version (see docs/ci.md for the full one)
-- run: uv tool install git+https://github.com/promptdrift/promptdrift
+- run: uv tool install git+https://github.com/ritaprieto900/promptdrift
 - run: promptdrift diff --require-baseline --md pr-report.md
   env:
     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -167,7 +167,7 @@ project stays narrow: gate prompt changes in CI, with a verdict you can trust.
 ## Development
 
 ```bash
-git clone https://github.com/promptdrift/promptdrift
+git clone https://github.com/ritaprieto900/promptdrift
 cd promptdrift
 uv sync
 uv run pytest              # 150+ tests, fully offline

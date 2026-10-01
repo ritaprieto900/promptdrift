@@ -4,7 +4,7 @@
 
 Prompt 回归测试 + CI 门禁。快照 diff 优先，统计抗抖动，Python 原生。
 
-[![CI](https://github.com/promptdrift/promptdrift/actions/workflows/ci.yml/badge.svg)](https://github.com/promptdrift/promptdrift/actions/workflows/ci.yml)
+[![CI](https://github.com/ritaprieto900/promptdrift/actions/workflows/ci.yml/badge.svg)](https://github.com/ritaprieto900/promptdrift/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%E2%80%933.13-blue)](https://pypi.org/project/promptdrift/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
 
@@ -76,7 +76,7 @@ Ollama），配 `base_url` 即可。
 ## 套件文件
 
 ```yaml
-$schema: https://raw.githubusercontent.com/promptdrift/promptdrift/main/schema/promptest.schema.json
+$schema: https://raw.githubusercontent.com/ritaprieto900/promptdrift/main/schema/promptest.schema.json
 suite: support-agent
 provider:
   openai_compat:
@@ -135,7 +135,7 @@ CI 里常用的 `diff` 选项：`--fail-on regression|flaky|any-fail`、`--requi
 
 ```yaml
 # GitHub Actions 最小用法（完整版见 docs/ci.md）
-- run: uv tool install git+https://github.com/promptdrift/promptdrift
+- run: uv tool install git+https://github.com/ritaprieto900/promptdrift
 - run: promptdrift diff --require-baseline --md pr-report.md
   env:
     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -162,7 +162,7 @@ promptfoo 是更全面的 eval 平台，DeepEval 强在指标研究。这个项�
 ## 开发
 
 ```bash
-git clone https://github.com/promptdrift/promptdrift
+git clone https://github.com/ritaprieto900/promptdrift
 cd promptdrift
 uv sync
 uv run pytest              # 150+ 测试，完全离线

@@ -39,9 +39,9 @@ dependencies = [
 promptdrift = "promptdrift.cli.app:main"
 
 [project.urls]
-Homepage = "https://github.com/promptdrift/promptdrift"
-Issues = "https://github.com/promptdrift/promptdrift/issues"
-Changelog = "https://github.com/promptdrift/promptdrift/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/ritaprieto900/promptdrift"
+Issues = "https://github.com/ritaprieto900/promptdrift/issues"
+Changelog = "https://github.com/ritaprieto900/promptdrift/blob/main/CHANGELOG.md"
 
 [dependency-groups]
 dev = [

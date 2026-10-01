@@ -6,7 +6,7 @@ rules that keep the tool trustworthy.
 ## Setup
 
 ```bash
-git clone https://github.com/promptdrift/promptdrift
+git clone https://github.com/ritaprieto900/promptdrift
 cd promptdrift
 uv sync          # installs the dev group: pytest, ruff, pyright, respx, ...
 uv run pytest    # must be green before any PR

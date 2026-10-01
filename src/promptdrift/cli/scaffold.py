@@ -7,7 +7,7 @@ run→approve→diff story with zero API keys and zero network.
 from __future__ import annotations
 
 SCHEMA_URL = (
-    "https://raw.githubusercontent.com/promptdrift/promptdrift/main/schema/promptest.schema.json"
+    "https://raw.githubusercontent.com/ritaprieto900/promptdrift/main/schema/promptest.schema.json"
 )
 
 _STARTER_REFUND = (
