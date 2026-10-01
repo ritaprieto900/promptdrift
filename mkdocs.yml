@@ -1,0 +1,34 @@
+site_name: promptdrift
+site_description: Prompt regression testing with CI gating. Snapshot-diff first, flake-aware by design.
+repo_url: https://github.com/promptdrift/promptdrift
+repo_name: promptdrift/promptdrift
+
+theme:
+  name: material
+  features:
+    - content.code.copy
+    - navigation.sections
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+nav:
+  - Home: index.md
+  - Verdict semantics: verdicts.md
+  - Suite reference: suite-reference.md
+  - CI setup: ci.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.superfences
+  - tables
+  - toc:
+      permalink: true
