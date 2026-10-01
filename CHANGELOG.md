@@ -4,6 +4,13 @@ All notable changes are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-10-01
+
+### Fixed
+
+- Report footers show the correct version. The version lookup used the old
+  distribution name and fell back to `0.0.0+unknown` after the rename.
+
 ## [0.1.0] - 2026-10-01
 
 ### Changed

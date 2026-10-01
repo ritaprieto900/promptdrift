@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "promptdrift-py"
-version = "0.1.0"
+version = "0.1.1"
 description = "Snapshot-diff-first prompt regression testing with flake-aware verdicts and CI gating. Know what your prompt change actually did."
 readme = "README.md"
 requires-python = ">=3.10"

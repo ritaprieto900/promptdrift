@@ -51,7 +51,7 @@ from promptdrift.services.differ import compare, ensure_comparable
 from promptdrift.services.loader import load_suite, resolve_suite_path, suite_from_dict
 from promptdrift.services.runner import Runner
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 __all__ = [
     "ASSERTION_TYPES",
