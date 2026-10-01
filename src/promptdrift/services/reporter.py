@@ -2,7 +2,7 @@
 
 Rendering is a pure function of (run, diff, fail_on, full). The markdown
 report's exact shape is pinned by golden-file tests — changing the format
-here means regenerating those goldens deliberately.
+here means regenerating those goldens.
 """
 
 from __future__ import annotations

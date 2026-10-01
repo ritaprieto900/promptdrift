@@ -1,7 +1,7 @@
 """Exception hierarchy for promptdrift.
 
-Every error raised deliberately by this package derives from
-:class:`PromptdriftError`, so embedders can catch one type. The CLI maps
+All errors raised by this package derive from :class:`PromptdriftError`,
+so embedders can catch one type. The CLI maps
 these to documented exit codes; library users handle them directly.
 """
 

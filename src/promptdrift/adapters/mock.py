@@ -1,7 +1,7 @@
 """Offline scripted provider — the backbone of tests, demos, and CI.
 
-The mock provider turns a suite's ``mock:`` config into deterministic (or
-deliberately flaky, via ``variants``) completions without any network. It is
+The mock provider turns a suite's ``mock:`` config into deterministic (or flaky, via
+``variants``) completions without any network. It is
 also how promptdrift tests itself: every unit and integration test runs on
 this adapter.
 """

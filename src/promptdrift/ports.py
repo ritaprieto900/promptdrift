@@ -1,9 +1,8 @@
 """Ports: the interfaces that services depend on and adapters implement.
 
-This module is the seam of the architecture. The domain and services layers
-import *only* the protocols and request/response records from here, never a
-concrete adapter. That is what lets the entire verdict pipeline run offline
-against :class:`promptdrift.adapters.mock.MockProvider` in tests.
+The domain and services layers import only these protocols and records,
+never a concrete adapter — which is what lets the whole verdict pipeline
+run offline against the mock provider in tests.
 """
 
 from __future__ import annotations

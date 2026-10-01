@@ -1,4 +1,4 @@
-"""Tests for the statistical verdict engine — the heart of promptdrift.
+"""Tests for the statistical verdict engine.
 
 The reference values here were cross-checked by hand against the Wilson
 score interval formula; they pin the *semantics*, not just the arithmetic:

@@ -1,6 +1,6 @@
 """Golden-file tests pinning the report formats (markdown + terminal).
 
-Regenerate deliberately after an intentional format change:
+Regenerate after an intentional format change:
 
     PROMPTDRIFT_REGEN_GOLDEN=1 uv run pytest tests/golden -q
 """
